@@ -2,6 +2,130 @@
 
 ---
 
+## v30 — 2026-05-19 — FICHA 360° CON TABS (Fase 2 del rediseño)
+
+### Pedido del usuario
+
+Respetar el orden original del plan v29: continuar con la Fase 2
+(refactor de la ficha 360°, filtros del inventario, estados
+empty/loading, formularios). Confirmó además: "Carta A/B" fuera
+por ahora; sistema 100% offline en un principio (sin migrar a
+backend Google) — no aplica a esta iteración pero queda anotado.
+
+### Contexto / aclaraciones resueltas por el usuario
+
+1. Carta A / Carta B → no se tocan por ahora.
+2. Offline confirmado como requisito duro. Se planteó que la deuda
+   #2 (SheetJS/JSZip por CDN rompe el sistema sin internet, que es
+   el escenario real del hospital) es más urgente que el refactor
+   de UX. El usuario eligió respetar el orden: el endurecimiento
+   offline queda priorizado para la próxima iteración.
+
+### Cambios aplicados
+
+**1) Ficha 360° con tabs internos.**
+
+Antes: `renderFicha` escupía ~8 tarjetas apiladas en un scroll
+vertical largo. Para ver Eventos había que bajar todo.
+
+Ahora:
+
+- **Barra de identidad fija (sticky)**: nombre · marca · modelo,
+  badge de estado, línea secundaria (serie · inventario ·
+  servicio) y los botones de acción (Registrar MP, ciclo
+  correctivo, pendiente, slot, anexos). Queda fija arriba al
+  scrollear cualquier panel — el contexto del equipo no se pierde
+  nunca.
+- **5 pestañas**: Resumen · Historial MP · Correctivo ·
+  Pendientes · Eventos. Cada una con badge de conteo; rojo en
+  Correctivo/Pendientes si hay abiertos.
+- Resumen agrupa: datos del equipo (kv-grid), responsable del
+  mes, programación anual (gantt) y observación anterior.
+- La alerta de 30 días y el banner de "ciclo en marcha" quedan
+  POR ENCIMA de los tabs (prioridad máxima, visibles siempre).
+
+Sin tocar lógica: los chunks (`gantt`, `histRows`, `pendHtml`,
+`cicHtml`, `eventosHtml`, IIFE de responsable) se calculan igual
+que en v29; solo cambió DÓNDE se insertan. `selectFichaTab` /
+`applyFichaTab` solo alternan clases CSS.
+
+**2) Filtros de inventario rediseñados.**
+
+Chips de filtros activos bajo la barra de stats, con quita
+individual (✕) por filtro y un chip "Limpiar todo" cuando hay
+más de uno. `clearInvFilter(which)` resetea búsqueda, familia,
+estado, responsable del mes o el toggle de pendientes.
+
+**3) Estados vacíos consistentes.**
+
+Nuevo componente `.fpanel-empty` (ícono + texto + acción
+opcional). Reemplaza los 3 estados ad-hoc: inventario inicial,
+"sin resultados" (con botón Limpiar filtros) y panel Correctivo
+sin ciclo (con botón Abrir ciclo).
+
+### Fix propio detectado
+
+La fila "Sin historial" de la tabla de historial usaba
+`colspan="5"` cuando la tabla tiene 6 columnas (Fecha, Mes,
+Resultado, Ejecutor, Observación, acciones). Quedaba desalineada
+con un hueco a la derecha. Corregido a `colspan="6"`.
+
+### Mejora UX/UI propia
+
+`UI.fichaTab` recuerda la última pestaña abierta y la reaplica al
+cambiar de equipo. Justificación operativa: auditar 20 equipos
+seguidos mirando "Historial MP" implicaba volver a "Resumen" y
+re-clickear en cada salto. Ahora el foco se mantiene; si la
+pestaña recordada no aplica a un equipo (no debería pasar, son
+fijas), cae a Resumen sin romper.
+
+### Validación
+
+```
+Sintaxis JS (vm.Script sobre el script inline): ✓ 0 errores
+Funciones presentes: renderFicha, selectFichaTab, applyFichaTab,
+  clearInvFilter, renderInventory ✓
+Estructura tabs: 5 data-ftab ↔ 5 data-fpanel (pareados) ✓
+Diff vs v29: cambios acotados a header, CSS, HTML de inv,
+  objeto UI, onSearch, renderInventory y renderFicha. NINGUNA
+  función de lógica de negocio tocada (loadFromWorkbook,
+  guardarMP, openSolicitudFlow, computeAlerta30, ciclo
+  correctivo, lectores XLSX) — verificado por rangos de hunk.
+Maestro real intacto: 7 hojas legibles
+  (PMP_2026, Registro_MP-2026, Servicio tecnico 2025,
+   Bajas 2026/2025/2024/2023) ✓
+```
+
+No se subió backup JSON en esta sesión, así que la validación
+fue estructural + de no-regresión por diff, no de datos. El
+cambio es presentacional puro; la lógica quedó byte-idéntica.
+
+### Qué mirar en la próxima iteración
+
+- **Prioritario**: endurecer offline (inlinear SheetJS + JSZip,
+  sacar los `<script src="cdn…">`). Hoy sin internet se cae la
+  importación del maestro y la exportación de plantillas — es el
+  escenario real del hospital. El usuario ya confirmó offline
+  como requisito duro.
+- Formularios consistentes (modales de MP, solicitud, pendiente,
+  ciclo): quedó fuera de v30 por volumen/riesgo; merece su propia
+  iteración con validación contra backup real.
+- Validar la ficha con tabs usando un backup real del usuario
+  (equipo con correctivo abierto + pendientes + historial largo)
+  para confirmar conteos y badges.
+- Pedir al usuario un `pmp_backup_*.json` actualizado: las
+  próximas iteraciones de lógica lo necesitan para validar con
+  datos reales según metodología.
+
+### Mejora UX/UI propia (resumen para changelog)
+
+> Memoria de pestaña entre equipos: el sistema no te hace
+> recomenzar la navegación en cada equipo. Pequeño, pero en una
+> jornada de auditoría de cientos de fichas es la diferencia
+> entre fluir y pelear con la UI.
+
+---
+
 ## v29 — 2026-05-19 — REDISEÑO VISUAL (Fase 1 de 3)
 
 ### Pedido del usuario

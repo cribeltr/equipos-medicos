@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>PMP HHHA — Preview de rediseño v29</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================================
+   DESIGN TOKENS — fuente única de verdad
+   ============================================================ */
+:root {
+  /* Color */
+  --bg:         #f5f7fb;
+  --surface:    #ffffff;
+  --surface-2:  #fafbfc;
+  --surface-3:  #f3f4f6;
+  --border:     #e5e7eb;
+  --border-strong: #d1d5db;
+  --text:       #0f172a;
+  --text-2:     #475569;
+  --text-3:     #94a3b8;
+
+  --primary:        #4f46e5;
+  --primary-hover:  #4338ca;
+  --primary-soft:   #eef2ff;
+  --primary-text:   #3730a3;
+
+  --success:        #059669;
+  --success-soft:   #d1fae5;
+  --success-text:   #065f46;
+
+  --warning:        #d97706;
+  --warning-soft:   #fef3c7;
+  --warning-text:   #92400e;
+
+  --danger:         #dc2626;
+  --danger-soft:    #fee2e2;
+  --danger-text:    #991b1b;
+
+  --info:           #0284c7;
+  --info-soft:      #e0f2fe;
+  --info-text:      #075985;
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-xl: 16px;
+
+  /* Shadow */
+  --sh-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --sh-md: 0 4px 8px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --sh-lg: 0 12px 24px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.04);
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+
+  /* Layout */
+  --sidebar-w: 232px;
+  --topbar-h: 56px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar main";
+  height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  grid-area: sidebar;
+  background: #0f172a;
+  color: #cbd5e1;
+  padding: var(--s-4) 0;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.brand {
+  padding: 0 var(--s-5) var(--s-5);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: var(--s-3);
+}
+.brand-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  display: flex; align-items: center; gap: var(--s-2);
+}
+.brand-title::before {
+  content: ""; display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+.brand-sub { font-size: 11px; color: #64748b; margin-top: 4px; letter-spacing: 0.3px; }
+.nav-group {
+  margin-bottom: var(--s-4);
+}
+.nav-group-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: #475569; padding: var(--s-2) var(--s-5); font-weight: 600;
+}
+.nav-item {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2) var(--s-5); font-size: 13px;
+  color: #cbd5e1; transition: all 0.12s ease;
+  position: relative;
+}
+.nav-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.nav-item.active {
+  background: rgba(79, 70, 229, 0.15);
+  color: #fff;
+}
+.nav-item.active::before {
+  content: ""; position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 3px; background: var(--primary); border-radius: 0 3px 3px 0;
+}
+.nav-icon { font-size: 15px; opacity: 0.9; width: 18px; text-align: center; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  background: var(--danger); color: #fff;
+  padding: 1px 6px; border-radius: 8px; min-width: 18px; text-align: center;
+}
+.nav-badge.muted { background: #334155; color: #94a3b8; }
+.nav-badge.ok { background: var(--success); }
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  grid-area: topbar;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--s-6);
+  display: flex; align-items: center; gap: var(--s-5);
+}
+.search-wrap {
+  flex: 1; max-width: 480px;
+  position: relative;
+}
+.search-wrap::before {
+  content: "⌕"; position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%); color: var(--text-3); font-size: 16px;
+}
+.search-input {
+  width: 100%; padding: 8px 14px 8px 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: 13px;
+}
+.search-input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-soft); }
+.kbd {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 6px; font-size: 10px; color: var(--text-2);
+  font-family: var(--font-mono);
+}
+.topbar-actions { display: flex; align-items: center; gap: var(--s-3); margin-left: auto; }
+.btn-rec {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--r-md);
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: 12px; color: var(--text-2);
+  transition: all 0.12s ease;
+}
+.btn-rec:hover { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
+.btn-rec .dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--danger);
+  animation: blink 1.5s infinite;
+}
+@keyframes blink { 50% { opacity: 0.3; } }
+.btn-icon {
+  width: 36px; height: 36px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: 14px; color: var(--text-2);
+  transition: all 0.12s ease;
+}
+.btn-icon:hover { background: var(--surface-3); }
+
+/* ============================================================
+   MAIN AREA
+   ============================================================ */
+.main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: var(--s-6);
+}
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: var(--s-6);
+  gap: var(--s-4);
+}
+.page-title {
+  font-size: 22px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: var(--s-3);
+}
+.page-subtitle {
+  color: var(--text-2); font-size: 13px; margin-top: 4px;
+}
+.page-actions { display: flex; gap: var(--s-2); }
+
+.btn {
+  padding: 8px 14px; border-radius: var(--r-md); font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.12s ease;
+  border: 1px solid transparent;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background: var(--surface-2); }
+.btn-ghost { color: var(--text-2); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--s-5);
+  position: relative;
+  transition: all 0.15s ease;
+}
+.stat:hover { box-shadow: var(--sh-md); transform: translateY(-1px); }
+.stat-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-2); font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.stat-icon { font-size: 13px; opacity: 0.7; }
+.stat-value {
+  font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+  margin: var(--s-2) 0 4px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-value .unit { font-size: 14px; font-weight: 500; color: var(--text-2); margin-left: 4px; }
+.stat-delta {
+  font-size: 11px; color: var(--text-2);
+  display: flex; align-items: center; gap: 4px;
+}
+.stat-delta.pos { color: var(--success); }
+.stat-delta.neg { color: var(--danger); }
+.stat-spark {
+  margin-top: var(--s-3);
+  height: 32px;
+}
+.stat.accent-success { border-left: 3px solid var(--success); }
+.stat.accent-warning { border-left: 3px solid var(--warning); }
+.stat.accent-danger  { border-left: 3px solid var(--danger); }
+.stat.accent-primary { border-left: 3px solid var(--primary); }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: var(--s-4);
+}
+.card-header {
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-3);
+}
+.card-title { font-size: 14px; font-weight: 600; }
+.card-subtitle { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.card-body { padding: var(--s-5); }
+.card-body.padless { padding: 0; }
+
+.two-col {
+  display: grid; grid-template-columns: 2fr 1fr; gap: var(--s-4);
+}
+@media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+table.data {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+table.data thead th {
+  position: sticky; top: 0;
+  background: var(--surface-2); color: var(--text-2);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+  font-weight: 600; text-align: left;
+  padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--border);
+}
+table.data tbody td {
+  padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--surface-3);
+  vertical-align: middle;
+}
+table.data tbody tr:hover { background: var(--surface-2); }
+table.data tbody tr.selected { background: var(--primary-soft); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+
+/* ============================================================
+   BADGES / PILLS
+   ============================================================ */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 600;
+  white-space: nowrap;
+}
+.pill.success { background: var(--success-soft); color: var(--success-text); }
+.pill.warning { background: var(--warning-soft); color: var(--warning-text); }
+.pill.danger  { background: var(--danger-soft); color: var(--danger-text); }
+.pill.info    { background: var(--info-soft); color: var(--info-text); }
+.pill.neutral { background: var(--surface-3); color: var(--text-2); }
+.pill.primary { background: var(--primary-soft); color: var(--primary-text); }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ============================================================
+   TIMELINE (en ficha equipo)
+   ============================================================ */
+.timeline { display: flex; flex-direction: column; gap: var(--s-3); }
+.timeline-item {
+  display: grid; grid-template-columns: 90px 24px 1fr; gap: var(--s-3);
+  align-items: flex-start; padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--surface-3);
+}
+.timeline-item:last-child { border-bottom: 0; }
+.timeline-date {
+  font-size: 11px; color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+}
+.timeline-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--surface-3); display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.timeline-content { min-width: 0; }
+.timeline-title {
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap;
+}
+.timeline-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.timeline-meta { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* ============================================================
+   TABS (en ficha del equipo)
+   ============================================================ */
+.tabs {
+  display: flex; gap: 4px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--s-5);
+}
+.tab {
+  padding: var(--s-3) var(--s-4); font-size: 13px; font-weight: 500;
+  color: var(--text-2); border-bottom: 2px solid transparent;
+  margin-bottom: -1px; cursor: pointer;
+  transition: all 0.12s ease;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-count {
+  margin-left: 4px; font-size: 11px;
+  background: var(--surface-3); color: var(--text-2);
+  padding: 0 6px; border-radius: 8px;
+}
+.tab.active .tab-count { background: var(--primary-soft); color: var(--primary-text); }
+
+/* ============================================================
+   GRILLA AÑO (en ficha equipo)
+   ============================================================ */
+.year-grid {
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: 4px; margin-top: var(--s-3);
+}
+.year-cell {
+  aspect-ratio: 1; border-radius: var(--r-sm);
+  background: var(--surface-3);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 10px;
+  position: relative;
+}
+.year-cell .m { color: var(--text-3); font-size: 9px; }
+.year-cell .v { font-weight: 700; font-size: 11px; }
+.year-cell.x  { background: var(--info-soft); color: var(--info-text); }
+.year-cell.r  { background: var(--warning-soft); color: var(--warning-text); }
+.year-cell.si { background: var(--success-soft); color: var(--success-text); }
+.year-cell.c  { background: var(--danger-soft); color: var(--danger-text); }
+
+/* ============================================================
+   ALERT BANNER
+   ============================================================ */
+.banner {
+  display: flex; gap: var(--s-3); align-items: flex-start;
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-md);
+  border-left: 3px solid;
+  font-size: 13px; margin-bottom: var(--s-4);
+}
+.banner.info    { background: var(--info-soft); border-color: var(--info); color: var(--info-text); }
+.banner.success { background: var(--success-soft); border-color: var(--success); color: var(--success-text); }
+.banner.warning { background: var(--warning-soft); border-color: var(--warning); color: var(--warning-text); }
+.banner.danger  { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-text); }
+.banner-icon { font-size: 16px; }
+.banner-title { font-weight: 600; }
+.banner-body { margin-top: 2px; font-size: 12px; opacity: 0.9; }
+
+/* ============================================================
+   BARRA DE PROGRESO
+   ============================================================ */
+.progress {
+  height: 6px; background: var(--surface-3); border-radius: 999px; overflow: hidden;
+}
+.progress > div { height: 100%; background: var(--success); border-radius: 999px; transition: width 0.4s ease; }
+.progress.warning > div { background: var(--warning); }
+.progress.danger  > div { background: var(--danger); }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty {
+  text-align: center; padding: var(--s-7) var(--s-4); color: var(--text-2);
+}
+.empty-icon { font-size: 32px; opacity: 0.4; margin-bottom: var(--s-3); }
+.empty-title { font-weight: 600; color: var(--text); margin-bottom: var(--s-1); }
+.empty-text { font-size: 12px; }
+
+/* ============================================================
+   VIEW SWITCHER (para mostrar pantallas del preview)
+   ============================================================ */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ============================================================
+   BANNER DE PREVIEW
+   ============================================================ */
+.preview-banner {
+  position: fixed; bottom: 16px; right: 16px;
+  background: #0f172a; color: #fff;
+  padding: 12px 18px; border-radius: 8px;
+  font-size: 12px; box-shadow: var(--sh-lg);
+  z-index: 100;
+  max-width: 380px;
+}
+.preview-banner b { color: #fff; }
+.preview-banner small { color: #94a3b8; display: block; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================================================ -->
+  <!-- SIDEBAR                                                       -->
+  <!-- ============================================================ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-title">Sistema PMP</div>
+      <div class="brand-sub">HHHA · SEC · Temuco</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-item active" onclick="showView('hoy')">
+        <span class="nav-icon">📅</span> Hoy
+        <span class="nav-badge">3</span>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Operación</div>
+      <div class="nav-item" onclick="showView('equipos')">
+        <span class="nav-icon">⚙️</span> Equipos
+        <span class="nav-badge muted">966</span>
+      </div>
+      <div class="nav-item" onclick="showView('preventivo')">
+        <span class="nav-icon">🛡</span> Preventivo
+      </div>
+      <div class="nav-item" onclick="showView('correctivo')">
+        <span class="nav-icon">🔧</span> Correctivo
+        <span class="nav-badge">1</span>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Análisis</div>
+      <div class="nav-item">
+        <span class="nav-icon">📊</span> Reportes
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📦</span> Entregas
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Datos</div>
+      <div class="nav-item">
+        <span class="nav-icon">📥</span> Maestro
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📇</span> Agenda
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📤</span> Plantillas
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">💾</span> Backup
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- TOPBAR                                                        -->
+  <!-- ============================================================ -->
+  <header class="topbar">
+    <div class="search-wrap">
+      <input class="search-input" placeholder="Buscar equipo, serie, inventario, servicio...">
+      <span class="kbd">⌘K</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-rec">
+        <span class="dot"></span> REC
+      </button>
+      <button class="btn-icon" title="Notificaciones">🔔</button>
+      <button class="btn-icon" title="Ayuda">?</button>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- MAIN AREA                                                     -->
+  <!-- ============================================================ -->
+  <main class="main">
+
+    <!-- =================== VISTA: HOY =================== -->
+    <div id="view-hoy" class="view active">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Hoy, martes 19 de mayo</h1>
+          <p class="page-subtitle">Mes en curso: <strong>Mayo 2026</strong> · 191 mantenciones programadas · 4 ejecutadas</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Sincronizar maestro</button>
+          <button class="btn btn-primary">+ Nueva mantención</button>
+        </div>
+      </div>
+
+      <!-- KPIs del día -->
+      <div class="stat-grid">
+        <div class="stat accent-danger">
+          <div class="stat-label"><span class="stat-icon">⚠️</span> Pendientes vencidos</div>
+          <div class="stat-value">3</div>
+          <div class="stat-delta neg">Causales Grupo A > 30 días</div>
+        </div>
+        <div class="stat accent-warning">
+          <div class="stat-label"><span class="stat-icon">⏳</span> A vencer en 7 días</div>
+          <div class="stat-value">12</div>
+          <div class="stat-delta">Compromisos próximos</div>
+        </div>
+        <div class="stat accent-primary">
+          <div class="stat-label"><span class="stat-icon">📅</span> Mantenciones del mes</div>
+          <div class="stat-value">2<span class="unit">%</span></div>
+          <div class="stat-delta">4 de 191 ejecutadas</div>
+          <div class="progress" style="margin-top:8px;"><div style="width:2%"></div></div>
+        </div>
+        <div class="stat accent-success">
+          <div class="stat-label"><span class="stat-icon">✓</span> Último backup</div>
+          <div class="stat-value" style="font-size:18px; margin-top:8px;">hace 6 min</div>
+          <div class="stat-delta pos">REC activo · 4 eventos hoy</div>
+        </div>
+      </div>
+
+      <!-- Alertas activas -->
+      <div class="banner danger">
+        <span class="banner-icon">⚠️</span>
+        <div>
+          <div class="banner-title">3 equipos con causal Grupo A superan 30 días sin ejecución</div>
+          <div class="banner-body">Monitor 2-100343 (C5 marzo, 49d) · Ventilador 1-220015 (C7 abril, 33d) · Desfibrilador 3-005512 (C5 abril, 32d)</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Tareas del día -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Tareas sugeridas para hoy</div>
+                <div class="card-subtitle">Basado en programación del mes y alertas activas</div>
+              </div>
+              <button class="btn btn-ghost">Ver todo →</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th>Prioridad</th>
+                    <th>Equipo</th>
+                    <th>Servicio</th>
+                    <th>Motivo</th>
+                    <th>Responsable</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="pill danger"><span class="dot"></span>Urgente</span></td>
+                    <td>Monitor 2-100343<br><span style="color:var(--text-3); font-size:11px;">Multiparámetros · NIHON KOHDEN</span></td>
+                    <td>UPC Adulto</td>
+                    <td>C5 marzo · 49 días sin acción</td>
+                    <td>Ricardo Matus</td>
+                    <td><button class="btn btn-ghost">Abrir →</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill warning"><span class="dot"></span>Alta</span></td>
+                    <td>Ventilador 1-220015<br><span style="color:var(--text-3); font-size:11px;">DRAGER · EVITA INFINITY</span></td>
+                    <td>UPC Cardiovascular</td>
+                    <td>C7 abril · 33 días</td>
+                    <td>Matías Soazo</td>
+                    <td><button class="btn btn-ghost">Abrir →</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill warning"><span class="dot"></span>Alta</span></td>
+                    <td>Desfibrilador 3-005512<br><span style="color:var(--text-3); font-size:11px;">PHILIPS · HEARTSTART</span></td>
+                    <td>Urgencia Adulto</td>
+                    <td>C5 abril · 32 días</td>
+                    <td>Daniel Díaz</td>
+                    <td><button class="btn btn-ghost">Abrir →</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill info"><span class="dot"></span>Hoy</span></td>
+                    <td>Monitor 2-133064<br><span style="color:var(--text-3); font-size:11px;">Multiparámetros · MINDRAY</span></td>
+                    <td>UPC Adulto</td>
+                    <td>Ciclo correctivo abierto · diagnóstico</td>
+                    <td>Ignacio Berner</td>
+                    <td><button class="btn btn-ghost">Abrir →</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill neutral"><span class="dot"></span>Media</span></td>
+                    <td>Incubadora 2-115361<br><span style="color:var(--text-3); font-size:11px;">DRAGER · CALEO</span></td>
+                    <td>Neonatología</td>
+                    <td>MP de septiembre programada (próxima)</td>
+                    <td>Tito Millapán</td>
+                    <td><button class="btn btn-ghost">Abrir →</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actividad reciente -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Actividad reciente</div>
+              <button class="btn btn-ghost">Ver todo</button>
+            </div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-date">hace 6 min</div>
+                  <div class="timeline-icon">💾</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Backup automático</div>
+                    <div class="timeline-desc">966 equipos · 1 con historial</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-date">hoy 16:13</div>
+                  <div class="timeline-icon">📥</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Maestro recargado</div>
+                    <div class="timeline-desc">883 registros importados de Registro_MP-2026</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-date">hoy 15:42</div>
+                  <div class="timeline-icon">📄</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Solicitud creada
+                      <span class="pill primary">2026-121109-19-5989</span>
+                    </div>
+                    <div class="timeline-desc">Monitor 2-133064 · C3 abril</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-date">ayer</div>
+                  <div class="timeline-icon">✓</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">3 plantillas mensuales</div>
+                    <div class="timeline-desc">Marzo · Abril · Mayo descargadas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Estado del sistema</div>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:var(--s-3);">
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:var(--text-2)">Equipos en parque</span>
+                <strong>966</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:var(--text-2)">Servicios cubiertos</span>
+                <strong>76</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:var(--text-2)">Asignaciones cargadas</span>
+                <strong>Mar · Abr · May</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:var(--text-2)">Contactos cargados</span>
+                <span class="pill warning">0/76</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:var(--text-2)">Versión</span>
+                <code style="font-size:11px; color:var(--text-2);">pmp.html v29</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== VISTA: EQUIPOS =================== -->
+    <div id="view-equipos" class="view">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Equipos críticos</h1>
+          <p class="page-subtitle">966 equipos · 6 familias · 76 servicios</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Filtros</button>
+          <button class="btn btn-secondary">Exportar</button>
+          <button class="btn btn-primary">+ Equipo</button>
+        </div>
+      </div>
+
+      <!-- Tarjetas resumen por familia -->
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">Monitores</div>
+          <div class="stat-value">556</div>
+          <div class="stat-delta">95% operativos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Ventiladores</div>
+          <div class="stat-value">142</div>
+          <div class="stat-delta">98% operativos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Desfibriladores</div>
+          <div class="stat-value">90</div>
+          <div class="stat-delta">100% operativos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Diálisis</div>
+          <div class="stat-value">53</div>
+          <div class="stat-delta">87% operativos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Incubadoras</div>
+          <div class="stat-value">27</div>
+          <div class="stat-delta">100% operativos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">M. Anestesia</div>
+          <div class="stat-value">27</div>
+          <div class="stat-delta">96% operativos</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Inventario</div>
+          <div style="display:flex; gap:8px;">
+            <select style="padding:6px 10px; border:1px solid var(--border); border-radius:var(--r-md); font-size:13px;">
+              <option>Todas las familias</option>
+            </select>
+            <select style="padding:6px 10px; border:1px solid var(--border); border-radius:var(--r-md); font-size:13px;">
+              <option>Todos los servicios</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Equipo</th>
+                <th>Servicio</th>
+                <th>Estado</th>
+                <th>Última MP</th>
+                <th>Próxima</th>
+                <th>Responsable</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="selected">
+                <td><code style="font-size:11px; color:var(--text-2)">2-133064</code></td>
+                <td>Monitor Multiparámetros<br><span style="color:var(--text-3); font-size:11px;">MINDRAY · S2SRF0978</span></td>
+                <td>UPC Adulto</td>
+                <td><span class="pill danger"><span class="dot"></span>No operativo</span></td>
+                <td>C3 abril 30</td>
+                <td>Septiembre</td>
+                <td>Ignacio Berner</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">2-115361</code></td>
+                <td>Incubadora CALEO<br><span style="color:var(--text-3); font-size:11px;">DRAGER · ASJL-0008</span></td>
+                <td>Neonatología</td>
+                <td><span class="pill success"><span class="dot"></span>Operativo</span></td>
+                <td>SI febrero</td>
+                <td>Mayo</td>
+                <td>Tito Millapán</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">2-116070</code></td>
+                <td>Incubadora OMNIBED<br><span style="color:var(--text-3); font-size:11px;">GENERAL ELECTRIC · TABX62307</span></td>
+                <td>Neonatología</td>
+                <td><span class="pill success"><span class="dot"></span>Operativo</span></td>
+                <td>SI febrero</td>
+                <td>Mayo</td>
+                <td>Tito Millapán</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">2-100343</code></td>
+                <td>Monitor Multiparámetros<br><span style="color:var(--text-3); font-size:11px;">NIHON KOHDEN</span></td>
+                <td>UPC Adulto</td>
+                <td><span class="pill warning"><span class="dot"></span>Alerta 30d</span></td>
+                <td>C5 marzo · 49d</td>
+                <td>Vencido</td>
+                <td>Ricardo Matus</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">1-220015</code></td>
+                <td>Ventilador EVITA<br><span style="color:var(--text-3); font-size:11px;">DRAGER · INFINITY</span></td>
+                <td>UPC Cardiovascular</td>
+                <td><span class="pill warning"><span class="dot"></span>Alerta 30d</span></td>
+                <td>C7 abril · 33d</td>
+                <td>Vencido</td>
+                <td>Matías Soazo</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">3-005512</code></td>
+                <td>Desfibrilador HEARTSTART<br><span style="color:var(--text-3); font-size:11px;">PHILIPS</span></td>
+                <td>Urgencia Adulto</td>
+                <td><span class="pill warning"><span class="dot"></span>Alerta 30d</span></td>
+                <td>C5 abril · 32d</td>
+                <td>Vencido</td>
+                <td>Daniel Díaz</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+              <tr>
+                <td><code style="font-size:11px; color:var(--text-2)">2-200001</code></td>
+                <td>Monitor Compacto<br><span style="color:var(--text-3); font-size:11px;">EDAN · M50</span></td>
+                <td>UPC Adulto</td>
+                <td><span class="pill success"><span class="dot"></span>Operativo</span></td>
+                <td>SI abril</td>
+                <td>Octubre</td>
+                <td>Cristina Rozas</td>
+                <td><button class="btn btn-ghost">Ver →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== VISTA: PREVENTIVO =================== -->
+    <div id="view-preventivo" class="view">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">🛡 Mantenimiento preventivo</h1>
+          <p class="page-subtitle">Cumplimiento del plan anual 2026 · año en curso</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Cargar mes</button>
+          <button class="btn btn-secondary">Exportar plantilla</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat accent-success">
+          <div class="stat-label">Cumplimiento YTD</div>
+          <div class="stat-value">76<span class="unit">%</span></div>
+          <div class="stat-delta pos">▲ 4% vs período anterior</div>
+          <div class="progress" style="margin-top:10px;"><div style="width:76%"></div></div>
+        </div>
+        <div class="stat accent-primary">
+          <div class="stat-label">Ejecutadas en mayo</div>
+          <div class="stat-value">4<span class="unit">/191</span></div>
+          <div class="stat-delta">Mes en curso · 12 días restantes</div>
+        </div>
+        <div class="stat accent-warning">
+          <div class="stat-label">Reprogramadas (causales)</div>
+          <div class="stat-value">294</div>
+          <div class="stat-delta">C5: 150 · C6: 56 · C7: 49 · otras: 39</div>
+        </div>
+        <div class="stat accent-danger">
+          <div class="stat-label">Sin acción aún</div>
+          <div class="stat-value">8</div>
+          <div class="stat-delta neg">Equipos del mes sin registro</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cumplimiento mensual</div>
+            <div class="card-subtitle">Últimos 12 meses</div>
+          </div>
+          <div class="card-body">
+            <!-- Grilla de barras -->
+            <div style="display:flex; gap:8px; align-items:flex-end; height:160px; padding:8px 0;">
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--success); height:75%; border-radius:4px 4px 0 0;" title="Ene: 75%"></div>
+                <span style="font-size:10px; color:var(--text-3);">Ene</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--success); height:88%; border-radius:4px 4px 0 0;" title="Feb: 88%"></div>
+                <span style="font-size:10px; color:var(--text-3);">Feb</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--success); height:78%; border-radius:4px 4px 0 0;" title="Mar: 78%"></div>
+                <span style="font-size:10px; color:var(--text-3);">Mar</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--warning); height:65%; border-radius:4px 4px 0 0;" title="Abr: 65%"></div>
+                <span style="font-size:10px; color:var(--text-3);">Abr</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--primary); height:2%; border-radius:4px 4px 0 0; opacity:0.6;" title="May: en curso"></div>
+                <span style="font-size:10px; color:var(--primary); font-weight:600;">May</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--surface-3); height:5%; border-radius:4px 4px 0 0;"></div>
+                <span style="font-size:10px; color:var(--text-3);">Jun</span>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div style="width:100%; background:var(--surface-3); height:5%; border-radius:4px 4px 0 0;"></div>
+                <span style="font-size:10px; color:var(--text-3);">Jul</span>
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--text-2); margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+              <strong style="color:var(--success);">●</strong> ≥ 70% &nbsp;
+              <strong style="color:var(--warning);">●</strong> 50-70% &nbsp;
+              <strong style="color:var(--danger);">●</strong> &lt; 50%
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Por responsable · Mayo</div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Ricardo Matus</span>
+                  <strong>2/48</strong>
+                </div>
+                <div class="progress"><div style="width:4%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Ignacio Berner</span>
+                  <strong>1/35</strong>
+                </div>
+                <div class="progress"><div style="width:3%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Matías Soazo</span>
+                  <strong>1/29</strong>
+                </div>
+                <div class="progress"><div style="width:3%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Tito Millapán</span>
+                  <strong>0/27</strong>
+                </div>
+                <div class="progress warning"><div style="width:0%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Cristina Rozas</span>
+                  <strong>0/22</strong>
+                </div>
+                <div class="progress warning"><div style="width:0%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Otros (5 técnicos)</span>
+                  <strong>0/30</strong>
+                </div>
+                <div class="progress"><div style="width:0%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== VISTA: CORRECTIVO =================== -->
+    <div id="view-correctivo" class="view">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">🔧 Mantenimiento correctivo</h1>
+          <p class="page-subtitle">Ciclos abiertos y tiempos por eslabón</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Histórico cerrados</button>
+          <button class="btn btn-primary">+ Nueva solicitud</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat accent-primary">
+          <div class="stat-label">Ciclos abiertos</div>
+          <div class="stat-value">1</div>
+          <div class="stat-delta">Tiempo medio: 12 días</div>
+        </div>
+        <div class="stat accent-warning">
+          <div class="stat-label">En diagnóstico</div>
+          <div class="stat-value">1</div>
+          <div class="stat-delta">Sin compromiso</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">En reparación</div>
+          <div class="stat-value">0</div>
+          <div class="stat-delta">—</div>
+        </div>
+        <div class="stat accent-danger">
+          <div class="stat-label">Sin folio SIGEM</div>
+          <div class="stat-value">0</div>
+          <div class="stat-delta">Todos los ciclos tienen folio</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ciclos correctivos abiertos</div>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th>Folio SIGEM</th>
+                <th>Equipo</th>
+                <th>Eslabón actual</th>
+                <th>Apertura</th>
+                <th>Días en eslabón</th>
+                <th>Responsable</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code style="font-size:11px; color:var(--primary-text); background:var(--primary-soft); padding:3px 8px; border-radius:4px;">2026-121109-19-5989</code></td>
+                <td>Monitor 2-133064<br><span style="color:var(--text-3); font-size:11px;">UPC Adulto</span></td>
+                <td><span class="pill warning"><span class="dot"></span>Diagnóstico</span></td>
+                <td>30-04-2026</td>
+                <td>19 días</td>
+                <td>Ignacio Berner</td>
+                <td><button class="btn btn-ghost">Abrir →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Tiempos promedio por eslabón</div>
+          <div class="card-subtitle">Histórico 2026</div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:8px;">
+            <div style="text-align:center; padding:12px; background:var(--surface-2); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--text-2);">Solicitud</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">2.1d</div>
+            </div>
+            <div style="text-align:center; padding:12px; background:var(--warning-soft); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--warning-text);">Diagnóstico</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">12d</div>
+            </div>
+            <div style="text-align:center; padding:12px; background:var(--surface-2); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--text-2);">Compra</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">—</div>
+            </div>
+            <div style="text-align:center; padding:12px; background:var(--surface-2); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--text-2);">Envío</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">—</div>
+            </div>
+            <div style="text-align:center; padding:12px; background:var(--surface-2); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--text-2);">Recepción</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">—</div>
+            </div>
+            <div style="text-align:center; padding:12px; background:var(--surface-2); border-radius:var(--r-md);">
+              <div style="font-size:11px; color:var(--text-2);">Reparación</div>
+              <div style="font-size:18px; font-weight:700; margin-top:4px;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Banner explicativo del preview -->
+<div class="preview-banner">
+  <b>Preview de rediseño v29</b>
+  <small>Maqueta sin lógica funcional. Navegá entre Hoy / Equipos / Preventivo / Correctivo en el sidebar para ver el aspecto. Datos del último backup.</small>
+</div>
+
+<script>
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.target.closest('.nav-item').classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

@@ -2,6 +2,120 @@
 
 ---
 
+## v31 — 2026-05-19 — FIX CRÍTICO: pérdida silenciosa de asignación
+
+### Pedido del usuario
+
+Subió la grabación de sesión `session_PMP_20260519T203220865Z.json`
+y el backup pareado, sin texto. Según metodología (punto 1), la
+grabación tiene el contexto del problema. Lo tiene.
+
+### Qué mostró la grabación
+
+```
+20:31:37  Asignacion_Mayo_2026.xlsx (20 KB)  → mes 5: 191/191 ✓
+20:32:02  Plantilla_Asignacion_Abr_2026.xlsx (191 KB) → mes 4: 0/0
+20:32:12  Plantilla_Asignacion_Mar_2026.xlsx (169 KB) → mes 3: 0/0
+```
+
+En el backup, `asignacionesMensuales`:
+- `2026-5`: 192 claves (191 equipos + __meta), matcheados 191.
+- `2026-4`: solo `__meta` con total 0. **Vacía.**
+- `2026-3`: solo `__meta` con total 0. **Vacía.**
+
+El archivo externo de mayo matcheó perfecto. Las plantillas
+generadas por el propio sistema (abril/marzo) entraron como 0 y
+**reemplazaron lo que hubiera de antes sin avisar**.
+
+### Diagnóstico (no era lo que parecía)
+
+Hipótesis inicial: bug de parseo del importador con las propias
+plantillas. **Descartada por validación.** Round-trip con SheetJS
+sobre el backup real (966 equipos):
+
+```
+mes 5 | asig en backup: 191 | round-trip: total 191, matcheados 191 ✓
+mes 4 | asig en backup:   0 | round-trip: total 0,   matcheados 0
+mes 3 | asig en backup:   0 | round-trip: total 0,   matcheados 0
+```
+
+El parser funciona perfecto cuando la columna Responsable tiene
+datos. El 0/0 de abril/marzo es porque esas plantillas se
+exportaron/guardaron con la columna Responsable VACÍA (plantilla
+sin completar). El bug real no es el parseo: es que el importador
+**pisaba en silencio** una asignación previa válida con una vacía.
+Pérdida de datos operativos sin ninguna advertencia.
+
+### Cambios aplicados
+
+**1) Fix crítico — guarda anti pérdida de datos (importador de
+asignación mensual).** Antes de reemplazar:
+
+- `total === 0` (archivo sin responsables): si ya había una
+  asignación previa con `matcheados > 0`, NO se pisa — se conserva
+  la anterior y se avisa con toast explícito ("¿exportaste la
+  plantilla antes de asignar los técnicos?"). Si no había previa,
+  se pide confirmación para guardar una asignación vacía.
+- `matcheados === 0` con `total > 0` (hay responsables pero ninguno
+  matchea el parque — archivo de otro mes o serie/inv distintos):
+  confirmación obligatoria antes de reemplazar, avisando cuántos
+  equipos tenía la asignación previa.
+- Cada rechazo deja `recordEvent('asignacion_rechazada', …)`.
+
+**2) Fix propio — deducción de período por nombre de archivo.**
+El export usa abreviaturas (`Plantilla_Asignacion_Abr_2026.xlsx`)
+pero `_deducirPeriodoDeNombre` solo conocía nombres largos
+("abril"). Resultado: re-importar la propia plantilla del sistema
+forzaba SIEMPRE el modal manual de mes/año (visible en la
+grabación para Abr y Mar; Mayo no lo necesitó porque el archivo
+del usuario decía "Mayo"). Ahora reconoce también las
+abreviaturas de `MES_NOMBRES`, tokenizando el nombre por
+separadores para no confundir "mar" con "marca".
+
+### Mejora UX/UI propia
+
+La barra de stats del inventario muestra ahora la asignación del
+mes en curso: nombre de archivo (tooltip), `matcheados/total`, y
+en rojo `⚠ sin responsables` si quedó vacía, o ámbar "Sin
+asignación cargada". Si el usuario hubiera tenido esto, habría
+visto al instante que abril/marzo pasaron a 0 — visibilidad que
+convierte una pérdida silenciosa en algo imposible de no notar.
+
+### Validación
+
+```
+Sintaxis JS: ✓ 0 errores
+Diff vs v30: acotado a _deducirPeriodoDeNombre (+13) y al guard
+  del importador (+38) y stats de inventario. Sin tocar matching,
+  normalización, lectores XLSX ni lógica de causales.
+Deducción de período:
+  Plantilla_Asignacion_Abr_2026.xlsx → mes 4, 2026 ✓
+  Plantilla_Asignacion_Mar_2026.xlsx → mes 3, 2026 ✓
+  Asignacion_Mayo_2026.xlsx          → mes 5, 2026 ✓ (nombre largo)
+  equipos_marca_general_2026.xlsx    → mes null ✓ (no falsea "mar")
+Guard (números reales del backup/grabación):
+  May 191/191 prev 0          → OK importa 191/191
+  Abr 0/0 sin previa          → confirm "¿guardar vacía?"
+  Abr 0/0 CON previa 191      → RECHAZADO, conserva 191  ← el caso
+  otro mes 150 resp/0 match   → confirm reemplazo
+Round-trip export↔import con backup real: 191/191 mes 5 ✓
+```
+
+### Qué mirar en la próxima iteración
+
+- Sigue prioritario el endurecimiento offline (SheetJS/JSZip
+  inline; sin red hoy se cae todo el flujo Excel — escenario real
+  del hospital, requisito duro ya confirmado).
+- Recuperar abril/marzo: el usuario tiene que volver a cargar las
+  plantillas YA COMPLETADAS con responsables (las vacías ya no van
+  a pisar nada, pero el dato perdido en esta sesión hay que
+  recargarlo desde el archivo bueno).
+- Evaluar un diff visual previo a la importación (qué cambia vs lo
+  cargado) — quedó anotado desde v28.
+- Formularios consistentes (pendiente de v30).
+
+---
+
 ## v30 — 2026-05-19 — FICHA 360° CON TABS (Fase 2 del rediseño)
 
 ### Pedido del usuario

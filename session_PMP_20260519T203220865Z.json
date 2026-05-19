@@ -1,0 +1,1334 @@
+{
+  "sesion": {
+    "inicio": "2026-05-19T20:31:12.680Z",
+    "fin": "2026-05-19T20:32:20.866Z",
+    "totalEventos": 164
+  },
+  "eventos": [
+    {
+      "timestamp": "2026-05-19T20:31:12.680Z",
+      "tipo": "click",
+      "elemento": "BUTTON#recBtn.rec-active",
+      "coordenadas": {
+        "x": 1378,
+        "y": 21
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:13.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1287,
+        "y": 33
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:13.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:14.032Z",
+      "tipo": "click",
+      "elemento": "INPUT#fileInput.hidden",
+      "coordenadas": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:14.032Z",
+      "tipo": "click",
+      "elemento": "BUTTON.primary",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:14.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:14.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:15.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:15.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:16.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:16.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:17.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:17.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:18.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:18.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:19.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:19.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:20.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:20.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:21.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:21.588Z",
+      "tipo": "file_load_start",
+      "payload": {
+        "name": "ProgramaciónMP_2026.xlsm",
+        "size": 1066854
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:21.949Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:22.001Z",
+      "tipo": "view_change",
+      "payload": {
+        "vista": "dash"
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:22.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1246,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:22.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 364,
+        "y": 80
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:23.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 961,
+        "y": 60
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:23.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1374,
+        "y": 27
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:24.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:24.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:25.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:25.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:26.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:26.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:27.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:27.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:28.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:28.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:29.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1384,
+        "y": 26
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:29.683Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1153,
+        "y": 601
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:30.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:30.322Z",
+      "tipo": "click",
+      "elemento": "INPUT#asignInput.hidden",
+      "coordenadas": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:30.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:31.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:31.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:32.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:32.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:33.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:33.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:34.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:34.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:35.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:35.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:36.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:36.680Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:37.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:37.460Z",
+      "tipo": "asignacion_load_start",
+      "payload": {
+        "name": "Asignacion_Mayo_2026.xlsx",
+        "size": 20333
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:37.492Z",
+      "tipo": "asignacion_load",
+      "payload": {
+        "mes": 5,
+        "anio": 2026,
+        "matcheados": 191,
+        "total": 191,
+        "sinMatch": 0,
+        "normalizados": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:37.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1098,
+        "y": 626
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:38.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 451,
+        "y": 54
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:38.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1157,
+        "y": 40
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:39.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1034,
+        "y": 22
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:39.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1228,
+        "y": 22
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:40.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1344,
+        "y": 17
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:40.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1106,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:41.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 249,
+        "y": 137
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:41.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 128,
+        "y": 146
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:42.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 118,
+        "y": 305
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:42.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 121,
+        "y": 304
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:43.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 121,
+        "y": 304
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:43.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 125,
+        "y": 327
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:44.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 127,
+        "y": 344
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:44.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 132,
+        "y": 378
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:45.180Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 147,
+        "y": 465
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:45.683Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 142,
+        "y": 350
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:46.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 130,
+        "y": 208
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:46.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 541,
+        "y": 184
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:47.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1477,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:47.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1501,
+        "y": 33
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:48.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1502,
+        "y": 29
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:48.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1496,
+        "y": 35
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:49.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1443,
+        "y": 62
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:49.423Z",
+      "tipo": "click",
+      "elemento": "INPUT#asignInput.hidden",
+      "coordenadas": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:49.424Z",
+      "tipo": "click",
+      "elemento": "BUTTON",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:49.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:50.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:50.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:51.180Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:51.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:52.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:52.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:53.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:53.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:54.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1442,
+        "y": 63
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:54.533Z",
+      "tipo": "asignacion_load_start",
+      "payload": {
+        "name": "Plantilla_Asignacion_Abr_2026.xlsx",
+        "size": 191155
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:54.555Z",
+      "tipo": "modal_open",
+      "payload": {
+        "title": "Confirmar mes y año de la asignación"
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:54.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 281,
+        "y": 241
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:55.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1207,
+        "y": 128
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:55.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1200,
+        "y": 129
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:56.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1156,
+        "y": 151
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:56.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1047,
+        "y": 189
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:57.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1025,
+        "y": 198
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:57.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 815,
+        "y": 334
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:58.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 798,
+        "y": 376
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:58.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 798,
+        "y": 368
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:59.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 791,
+        "y": 366
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:59.401Z",
+      "tipo": "click",
+      "elemento": "SELECT#askMes",
+      "coordenadas": {
+        "x": 791,
+        "y": 366
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:31:59.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 785,
+        "y": 376
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:00.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 783,
+        "y": 382
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:00.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 783,
+        "y": 382
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:00.761Z",
+      "tipo": "input",
+      "campo": "askMes",
+      "valor": "4"
+    },
+    {
+      "timestamp": "2026-05-19T20:32:00.761Z",
+      "tipo": "click",
+      "elemento": "SELECT#askMes",
+      "coordenadas": {
+        "x": 510,
+        "y": 347
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:01.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 782,
+        "y": 476
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:01.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 977,
+        "y": 496
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:02.008Z",
+      "tipo": "modal_close",
+      "payload": {}
+    },
+    {
+      "timestamp": "2026-05-19T20:32:02.015Z",
+      "tipo": "asignacion_load",
+      "payload": {
+        "mes": 4,
+        "anio": 2026,
+        "matcheados": 0,
+        "total": 0,
+        "sinMatch": 0,
+        "normalizados": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:02.021Z",
+      "tipo": "click",
+      "elemento": "BUTTON.save.primary",
+      "coordenadas": {
+        "x": 985,
+        "y": 501
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:02.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 987,
+        "y": 501
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:02.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1535,
+        "y": 167
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:03.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1497,
+        "y": 55
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:03.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1503,
+        "y": 19
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:04.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1504,
+        "y": 27
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:04.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1467,
+        "y": 73
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:05.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:05.209Z",
+      "tipo": "click",
+      "elemento": "INPUT#asignInput.hidden",
+      "coordenadas": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:05.209Z",
+      "tipo": "click",
+      "elemento": "BUTTON",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:05.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:06.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:06.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:07.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:07.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:08.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:08.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:09.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:09.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1466,
+        "y": 70
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:09.830Z",
+      "tipo": "asignacion_load_start",
+      "payload": {
+        "name": "Plantilla_Asignacion_Mar_2026.xlsx",
+        "size": 169439
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:09.845Z",
+      "tipo": "modal_open",
+      "payload": {
+        "title": "Confirmar mes y año de la asignación"
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:10.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 229,
+        "y": 274
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:10.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 699,
+        "y": 412
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:11.136Z",
+      "tipo": "click",
+      "elemento": "SELECT#askMes",
+      "coordenadas": {
+        "x": 670,
+        "y": 370
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:11.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 670,
+        "y": 370
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:11.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 675,
+        "y": 382
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.106Z",
+      "tipo": "input",
+      "campo": "askMes",
+      "valor": "3"
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.106Z",
+      "tipo": "click",
+      "elemento": "SELECT#askMes",
+      "coordenadas": {
+        "x": 510,
+        "y": 347
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 684,
+        "y": 453
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 970,
+        "y": 509
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.960Z",
+      "tipo": "modal_close",
+      "payload": {}
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.970Z",
+      "tipo": "asignacion_load",
+      "payload": {
+        "mes": 3,
+        "anio": 2026,
+        "matcheados": 0,
+        "total": 0,
+        "sinMatch": 0,
+        "normalizados": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:12.978Z",
+      "tipo": "click",
+      "elemento": "BUTTON.save.primary",
+      "coordenadas": {
+        "x": 990,
+        "y": 509
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:13.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 990,
+        "y": 509
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:13.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1001,
+        "y": 493
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:14.183Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 545,
+        "y": 173
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:14.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 530,
+        "y": 159
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:15.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 506,
+        "y": 160
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:15.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1288,
+        "y": 126
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:16.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1356,
+        "y": 38
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:16.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:17.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:17.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:18.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:18.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:19.181Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:19.682Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:20.182Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    },
+    {
+      "timestamp": "2026-05-19T20:32:20.681Z",
+      "tipo": "mouse",
+      "coordenadas": {
+        "x": 1350,
+        "y": 24
+      }
+    }
+  ]
+}

@@ -22,9 +22,30 @@
     · UI · Helper `badgeCodigoGrilla(codigo)` centraliza la triple
       condicional `c.codigo === 'PM' ? 'badge-warn' : …` que estaba
       cableada en la plantilla mensual.
-  Validación: sintaxis JS OK, 23/23 campos idénticos al armado
-  anterior en equipoDesdeFilaMaestro, 200/200 slots detectados,
-  cumplimiento test 70 SI + 20 C2 / 100 prog → 90% OK.
+  --------------------------------------------------------------------
+  CAMBIOS UI (sobre el refactor anterior):
+    · UI · Helper `selectResponsable({ id, value, extras })`
+      construye un <select> de responsables con la lista oficial de
+      técnicos activos (S.tecnicos), opciones extra opcionales
+      (típicamente supervisora del servicio) y una opción "Otro…"
+      que revela un input de texto libre. Si el valor preseleccionado
+      no está en la lista, el select cae a "Otro…" automáticamente
+      preservando el texto previo (no rompe pendientes históricos).
+    · Modal "Nuevo pendiente" · El input libre del responsable pasa
+      a select de técnicos. Evita typos y unifica nombres
+      (antes "C. Beltrán" / "Cristian Beltran" / "Cristián B."
+      coexistían y no agrupaban en informes).
+    · Modal "Solicitud de trabajo SIGEM" · Idem, con la supervisora
+      del servicio prepoblada como opción extra (no es técnico SEC
+      pero es quien gestiona el folio). La opción "Otro…" cubre
+      cualquier caso atípico sin perder la guía del select.
+    · Panel de gestión del pendiente · El responsable ahora es
+      editable (antes era solo lectura). Reasignar deja entrada
+      automática en el log: "Responsable: X → Y" y dispara evento
+      PENDIENTE_ACTUALIZADO. Útil cuando rota el técnico asignado.
+  Validación: sintaxis JS OK; sandbox test del helper cubre 6 casos
+  (sin valor, valor en lista, extras, dedupe extra/técnico, técnicos
+  inactivos excluidos, valor fuera de lista → "Otro…").
   ====================================================================
 -->
 <html lang="es">
@@ -2466,6 +2487,62 @@ const UI = {
     if (codigo === 'BAJA')              return { cls: 'badge-muted',  txt: 'BAJA' };
     if (D.CAUSALES[codigo])             return { cls: 'badge-accent', txt: codigo };
     return { cls: 'badge-muted', txt: codigo || '—' };
+  },
+
+  /**
+   * Construye un <select> de responsables (técnicos activos del SEC) con opciones
+   * extra opcionales (típicamente supervisora del servicio), y una opción final
+   * "Otro…" que muestra un input de texto libre para casos puntuales.
+   * Devuelve un wrapper <div> que expone .getValue() para leer el responsable elegido.
+   *
+   * @param {object} opts
+   * @param {string} opts.id           — id base usado en select + input "otro"
+   * @param {string} [opts.value]      — valor preseleccionado
+   * @param {string[]} [opts.extras]   — opciones extra a anteponer (ej: supervisora)
+   * @param {boolean} [opts.permitirOtro=true] — incluir opción "Otro…"
+   */
+  selectResponsable(opts = {}) {
+    const id = opts.id || 'resp-' + Math.random().toString(36).slice(2, 7);
+    const value = opts.value || '';
+    const extras = (opts.extras || []).filter(Boolean);
+    const permitirOtro = opts.permitirOtro !== false;
+    const tecnicos = S.tecnicos.filter(t => t.activo).map(t => t.nombreCanonico);
+    // Una sola lista, con extras primero, dedupe-ando el supervisor si coincide con un técnico
+    const opcionesUnicas = U.unique([...extras, ...tecnicos]).filter(Boolean);
+
+    const wrap = U.el('div', { class: 'select-responsable' });
+    const select = U.el('select', { class: 'select select-full', id });
+    select.appendChild(U.el('option', { value: '' }, '— Selecciona responsable —'));
+    for (const n of opcionesUnicas) {
+      const o = U.el('option', { value: n }, n);
+      if (n === value) o.setAttribute('selected', '');
+      select.appendChild(o);
+    }
+    if (permitirOtro) select.appendChild(U.el('option', { value: '__OTRO__' }, 'Otro… (escribir)'));
+
+    // Si el valor inicial no está en la lista, lo dejamos en "Otro…" con el texto cargado
+    const otroInput = U.el('input', {
+      class: 'input', id: id + '-otro', placeholder: 'Escribir responsable',
+      style: { display: 'none', marginTop: '6px' }
+    });
+    if (value && !opcionesUnicas.includes(value) && permitirOtro) {
+      select.value = '__OTRO__';
+      otroInput.value = value;
+      otroInput.style.display = '';
+    }
+    select.addEventListener('change', () => {
+      otroInput.style.display = (select.value === '__OTRO__') ? '' : 'none';
+      if (select.value === '__OTRO__') otroInput.focus();
+    });
+
+    wrap.appendChild(select);
+    wrap.appendChild(otroInput);
+    wrap.getValue = () => {
+      const v = select.value;
+      if (v === '__OTRO__') return otroInput.value.trim();
+      return v;
+    };
+    return wrap;
   }
 };
 
@@ -3366,12 +3443,20 @@ async function abrirFlujoSolicitudTrabajo(e, mpOrigen = null) {
       </div>
       <div class="field">
         <label class="label">Responsable de gestión <span class="required">*</span></label>
-        <input class="input" id="sol-resp" placeholder="Ej: Supervisora de UCI Adulto" value="${contactoSupervisorDe(e.servicioClinico)}">
+        <div id="sol-resp-mount"></div>
       </div>
     </div>`;
   // Sugerir fecha compromiso 5 días hábiles
   const fechaSug = new Date(); fechaSug.setDate(fechaSug.getDate() + 5);
   cont.querySelector('#sol-fecha').value = U.formatISO(fechaSug);
+  // La supervisora del servicio se ofrece como opción extra (típicamente quien gestiona el folio SIGEM)
+  const supervisor = contactoSupervisorDe(e.servicioClinico);
+  const respField = UI.selectResponsable({
+    id: 'sol-resp',
+    value: supervisor || '',
+    extras: supervisor ? [supervisor] : []
+  });
+  cont.querySelector('#sol-resp-mount').appendChild(respField);
 
   const m = UI.modal({
     titulo: 'Solicitud de trabajo correctiva',
@@ -3383,7 +3468,7 @@ async function abrirFlujoSolicitudTrabajo(e, mpOrigen = null) {
         const folio = cont.querySelector('#sol-folio').value.trim();
         const desc = cont.querySelector('#sol-desc').value.trim();
         const fecha = cont.querySelector('#sol-fecha').value;
-        const resp = cont.querySelector('#sol-resp').value.trim();
+        const resp = respField.getValue();
         if (!desc) return U.toast('Indica la descripción', 'error');
         if (!fecha) return U.toast('Indica la fecha compromiso', 'error');
         if (!resp) return U.toast('Indica el responsable', 'error');
@@ -3801,9 +3886,46 @@ function abrirGestionPendiente(pendienteId) {
   cont.innerHTML = `
     <div class="text-sm mb-16">${p.descripcion || ''}</div>
     <div class="field-row mb-16">
-      <div><div class="label">Responsable</div><div class="text-strong">${p.responsable}</div></div>
+      <div class="field"><label class="label">Responsable</label><div id="ge-resp-mount"></div></div>
       <div><div class="label">Compromiso</div><div class="text-strong">${p.fechaCompromiso ? U.formatDDMMAAAA(p.fechaCompromiso) : '—'}</div></div>
     </div>`;
+  // Responsable editable (mismo helper que el alta del pendiente).
+  // Si el responsable actual no está en la lista de técnicos, cae automáticamente
+  // a "Otro…" preservando el valor previo — útil para pendientes históricos.
+  const respGE = UI.selectResponsable({ id: 'ge-resp', value: p.responsable || '' });
+  cont.querySelector('#ge-resp-mount').appendChild(respGE);
+  respGE.querySelector('select').addEventListener('change', async () => {
+    const nuevo = respGE.getValue();
+    if (!nuevo || nuevo === p.responsable) return;
+    const previo = p.responsable;
+    p.responsable = nuevo;
+    p.log.push({
+      fecha: new Date().toISOString(), autor: 'Operador',
+      accion: 'reasignó', nota: `Responsable: ${previo || '—'} → ${nuevo}`
+    });
+    await DB.put('pendientes', p);
+    await registrarEvento({
+      equipoId: p.equipoId, tipo: 'PENDIENTE_ACTUALIZADO',
+      descripcion: `Reasignación: ${previo || '—'} → ${nuevo}`,
+      responsable: 'Operador'
+    });
+    if (typeof renderLog === 'function') renderLog();
+    U.toast('Responsable actualizado', 'ok');
+  });
+  // El input "Otro…" se confirma con blur (cuando el usuario termina de escribir).
+  respGE.querySelector('input').addEventListener('blur', async () => {
+    const nuevo = respGE.getValue();
+    if (!nuevo || nuevo === p.responsable) return;
+    const previo = p.responsable;
+    p.responsable = nuevo;
+    p.log.push({
+      fecha: new Date().toISOString(), autor: 'Operador',
+      accion: 'reasignó', nota: `Responsable: ${previo || '—'} → ${nuevo}`
+    });
+    await DB.put('pendientes', p);
+    if (typeof renderLog === 'function') renderLog();
+    U.toast('Responsable actualizado', 'ok');
+  });
 
   // SUBTAREAS
   cont.appendChild(U.el('label', { class: 'label' }, 'Subtareas'));
@@ -3970,7 +4092,7 @@ async function abrirNuevoPendiente() {
     <div class="field"><label class="label">Título <span class="required">*</span></label><input class="input" id="pn-tit"></div>
     <div class="field"><label class="label">Descripción</label><textarea class="textarea" id="pn-desc" rows="2"></textarea></div>
     <div class="field-row">
-      <div class="field"><label class="label">Responsable <span class="required">*</span></label><input class="input" id="pn-resp"></div>
+      <div class="field"><label class="label">Responsable <span class="required">*</span></label><div id="pn-resp-mount"></div></div>
       <div class="field"><label class="label">Compromiso</label><input class="input" type="date" id="pn-fecha"></div>
     </div>
     <div class="field">
@@ -3979,6 +4101,8 @@ async function abrirNuevoPendiente() {
         <option value="">— Sin equipo —</option>
       </select>
     </div>`;
+  const respField = UI.selectResponsable({ id: 'pn-resp' });
+  cont.querySelector('#pn-resp-mount').appendChild(respField);
   const sel = cont.querySelector('#pn-eq');
   for (const e of S.equipos.filter(e => !e.esSlot && e.estadoOperacional !== 'DE_BAJA').sort(U.by('servicioClinico'))) {
     const o = U.el('option', { value: e.id }, `${e.servicioClinico || ''} · ${e.numeroSerie || e.numeroInventario || ''} (${e.marca || ''} ${e.modelo || ''})`);
@@ -3991,7 +4115,7 @@ async function abrirNuevoPendiente() {
       U.el('button', { class: 'btn btn-primary', onclick: async () => {
         const tit = cont.querySelector('#pn-tit').value.trim();
         const desc = cont.querySelector('#pn-desc').value.trim();
-        const resp = cont.querySelector('#pn-resp').value.trim();
+        const resp = respField.getValue();
         const fecha = cont.querySelector('#pn-fecha').value;
         const eqId = cont.querySelector('#pn-eq').value || null;
         if (!tit) return U.toast('Indica el título', 'error');

@@ -2,6 +2,115 @@
 
 ---
 
+## Refactor + UX — 2026-05-20 — Responsable como lista desplegable
+
+### Pedido del usuario
+
+> "para los pendientes y cualquier otro apartado el responsable debe
+> ser una lista desplegable"
+
+Sobre el rewrite editorial (`outputs/pmp_refactor.html`). Hasta este
+cambio el responsable se ingresaba como input libre, lo que generaba
+typos y nombres no unificados ("Cristián B." / "Cristian Beltran" /
+"C. Beltrán" coexistían como técnicos distintos en informes).
+
+### Cambios aplicados
+
+**1) Helper `UI.selectResponsable({ id, value, extras, permitirOtro })`.**
+
+Devuelve un wrapper con:
+
+- Un `<select>` poblado con los técnicos activos (`S.tecnicos` con
+  `activo: true`) — usa la lista oficial del SEC, sin inactivos.
+- `extras: string[]` para opciones contextuales (ej: supervisora del
+  servicio clínico en la solicitud SIGEM). Si una extra coincide con
+  un técnico se deduplica.
+- Una opción final "Otro… (escribir)" que revela un input de texto
+  libre. Si el valor preseleccionado **no** está en la lista, el
+  select cae automáticamente a "Otro…" preservando el texto previo
+  — esto es clave para pendientes históricos que tienen responsables
+  que ya no están en la lista oficial.
+- `.getValue()` devuelve el responsable elegido sin importar de
+  dónde venga (select normal o input "Otro…").
+
+**2) Modal "Nuevo pendiente"** (`abrirNuevoPendiente`).
+
+El input `<input id="pn-resp">` pasa a `UI.selectResponsable({ id: 'pn-resp' })`.
+La validación sigue funcionando (`if (!resp) return U.toast('Indica el responsable')`).
+
+**3) Modal "Solicitud de trabajo correctiva SIGEM"** (`abrirFlujoSolicitudTrabajo`).
+
+El responsable de gestión SIGEM **no** es un técnico SEC sino
+típicamente la supervisora del servicio clínico (quien tramita el
+folio en SIGEM). Decisión técnica:
+
+- Se busca con `contactoSupervisorDe(e.servicioClinico)` el contacto
+  vigente del servicio. Si existe, se pasa como `extras: [supervisor]`
+  Y como `value` (queda preseleccionado).
+- Los técnicos del SEC quedan disponibles igual debajo, por si el
+  flujo lo gestiona internamente.
+- "Otro…" cubre cualquier caso atípico (otro funcionario, suplencia)
+  sin perder la guía de la lista.
+
+**4) Panel de gestión del pendiente** (`abrirGestionPendiente`).
+
+Antes el responsable se mostraba como texto solo lectura — para
+cambiarlo había que borrar y recrear el pendiente. Ahora es editable
+con el mismo helper. Reasignar:
+
+- Persiste el cambio inmediatamente (`DB.put('pendientes', p)`).
+- Deja entrada automática en el log: `Responsable: X → Y` con autor
+  "Operador" y acción "reasignó".
+- Dispara `registrarEvento({ tipo: 'PENDIENTE_ACTUALIZADO', … })`.
+- Toast de confirmación.
+
+Aplica tanto a cambio dentro de las opciones del select como a edición
+del campo "Otro…" (confirma con blur).
+
+### Mejora UX/UI propia
+
+El panel de gestión del pendiente ahora deja **reasignar** sin recrear
+el registro — no estaba pedido, pero era un agujero obvio (cambio de
+turno del técnico, ausencia, vacaciones). Se traza en el log para que
+quede auditoría de quién quedó responsable y desde cuándo.
+
+### Validación
+
+Sintaxis JS OK con `node --check` (4106 líneas en bloque `<script>`).
+Test funcional del helper (`/tmp/test_resp.mjs`) con DOM mock:
+
+```
+selectResponsable es función?                                   OK
+Opciones por defecto (sin valor):
+  ['— Selecciona responsable —','Ricardo Matus Aroca',
+   'Cristián Beltrán Oviedo','Macarena Toledo','Otro… (escribir)']
+getValue() inicial: ''
+Caso valor en lista — opción marcada: Cristián Beltrán Oviedo   OK
+Caso con extras — primera opción real: Supervisora UCI          OK
+¿incluye "Otro…"?                                                OK
+Dedupe técnico/extra (Macarena × 1)                              OK
+Técnico inactivo excluido                                        OK
+Valor fuera de lista → select="__OTRO__"                         OK
+  input "otro" precargado con el texto previo                    OK
+  getValue() devuelve el texto libre                             OK
+```
+
+### Qué mirar en la próxima iteración
+
+- **Datos históricos sucios.** Si en una migración previa quedaron
+  responsables tipeados a mano fuera de la lista, ahora caen a "Otro…"
+  automáticamente — el usuario los va a ver y puede limpiarlos uno
+  por uno reasignando. Podría agregarse una vista de "responsables no
+  canónicos" para hacer la limpieza masiva.
+- **Sigue pendiente** la migración a producción del rewrite (decisión
+  IndexedDB vs localStorage, restauración del backup histórico).
+- **Falta unificación** en la asignación mensual (plantilla Excel) —
+  ahí el responsable sale del Excel directamente; conviene validar
+  que coincida con la lista canónica al importar y avisar en caso
+  contrario (extiende la guard de v31).
+
+---
+
 ## Refactor — 2026-05-20 — Limpieza del rewrite editorial (sin cambios funcionales)
 
 ### Pedido del usuario

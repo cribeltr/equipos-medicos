@@ -2,6 +2,120 @@
 
 ---
 
+## Refactor — 2026-05-20 — Limpieza del rewrite editorial (sin cambios funcionales)
+
+### Pedido del usuario
+
+Subió `fec63697-pmphhha1.html` (4825 líneas) — un rewrite
+editorial-serif del sistema, con backend IndexedDB + ExcelJS,
+arquitectura modular en 17 secciones numeradas. **No es la
+producción v31** (sigue intacto en `pmp.html`): es una rama
+experimental, más limpia de base pero con duplicación residual.
+
+Pidió "refactorizá el código". Decisión técnica mía: eliminar la
+duplicación de mayor impacto sin cambiar comportamiento ni
+identidad visual. Cero migración de lógica.
+
+### Hallazgos del audit (Explore agent)
+
+Sobre el JS (líneas 824–4823) los smells con mejor ROI:
+
+1. **DB · 5 funciones × Promise boilerplate idéntico.**
+   `put/get/all/del/clear/putMany/batchWrite` cada una replicaba
+   `new Promise((res,rej)=>{ r.onsuccess=…; r.onerror=…; })`.
+2. **Construcción de equipo duplicada en 2 sitios.**
+   `IMPORT.cargarInicial` y `IMPORT.aplicarDiff` mapeaban a mano
+   los ~24 campos `fila → equipo`. Si se agrega un campo en uno
+   y no en el otro: drift silencioso en cargas posteriores.
+3. **Códigos de grilla sueltos.** Literales `['X','R','RA','PM']`
+   y `['SI','C1'…'C8','FS','BAJA']` aparecían crudos en
+   `validarFechaMP`, `calcularCumplimiento` y `detectarDiferencias`
+   — sin documentar la diferencia semántica entre uno y otro.
+4. **Triple condicional de badge repetida.** El cálculo
+   `c.codigo === 'PM' ? 'badge-warn' : (R/RA ? 'badge-cool' :
+   'badge-muted')` aparecía en la plantilla mensual (un lugar
+   por ahora — anclamos el patrón antes de que prolifere).
+
+### Cambios aplicados
+
+Archivo de salida: `outputs/pmp_refactor.html`.
+
+**1) `DB._req(request, map)` + `DB._txDone(t, value)`.**
+Wrappers que promisifican un IDBRequest y una IDBTransaction.
+Las 5 funciones de DB pasaron de ~6 líneas cada una a 2–3. Bonus:
+`_txDone` agrega `onabort` además de `onerror` — antes una
+transacción abortada (cuota llena, conflicto de versión) quedaba
+colgada sin reject.
+
+**2) `D.equipoDesdeFilaMaestro(fila, id?)` y
+`D.celdaMaestroDesdeFila(equipoId, mes, fila)`.**
+Fuente única del mapeo del maestro. `cargarInicial` pasó de un
+loop de 38 líneas a 5; `aplicarDiff` de 26 a 6.
+
+**3) `D.CODIGOS_PROGRAMADOS` / `D.CODIGOS_OPERATIVOS` +
+predicados `esCodigoProgramado` / `esCodigoOperativo`.**
+Reemplaza los array literales sueltos. La diferencia semántica
+queda explícita en el código (X/R/RA/PM = "el maestro lo
+programó"; SI/Cn/FS/BAJA = "hubo acción operativa que cierra
+alerta 30d").
+
+**4) `UI.badgeCodigoGrilla(codigo)`** — sibling de
+`UI.badgeEstado`. Devuelve `{cls, txt}`. Cubre todos los códigos
+de la grilla, incluso los que aún no se renderizan como badge,
+para que la próxima vista que lo necesite ya tenga el helper.
+
+### Mejora UX/UI propia
+
+(No aplica esta iteración — refactor puro sin cambios visibles.)
+
+### Validación
+
+Sintaxis con `node --check` sobre el bloque `<script>` aislado:
+OK (4003 líneas, 5 más que baseline por los JSDoc y nuevas
+constantes; el código lógico neto se redujo ~58 líneas).
+
+Tests de equivalencia (`/tmp/test_refactor.mjs`, ejecuta D + U
+en sandbox):
+
+```
+Campos equipo (helper vs armado original): 23/23 OK
+Slot detección esSlot=true (DISPONIBLE/DISPONIBLE): OK
+Default familia/frecuencia: MONITORIZACION / 6 OK
+CODIGOS_PROGRAMADOS predicado: OK (X,PM,R,RA sí; SI,VACIO no)
+CODIGOS_OPERATIVOS predicado: OK (SI,C1,C8,FS,BAJA sí; X no)
+Celda maestro mes=5 con código PM: OK
+```
+
+Stress test con 200 filas sintéticas variadas
+(`/tmp/test_backup.mjs`):
+
+```
+Slots detectados: 200/200
+Tipos campo-correctos: 200/200
+calcularCumplimiento(70 SI + 20 C2 + 10 C5, 100 X programados):
+  programadas=100, ejecutadas=90, porcentaje=90  ← lógica intacta
+  (C2 cuenta como ejecutada por ser grupo B; C5 grupo A no cuenta)
+```
+
+### Qué mirar en la próxima iteración
+
+- **Funciones gigantes pendientes** (alto ROI siguiente):
+  `marcarGrilla` (273 líneas), `abrirRegistroMP` (200+),
+  `abrirGestionPendiente` (147), `renderPendienteCard` (173).
+  Todas mezclan armado de modal + handlers + persistencia.
+  Sugerencia: extraer `Pendiente.renderForm(p)` y
+  `MP.renderForm(equipo, fecha)` al estilo de `IMPORT`/`GEN`.
+- **`UI.badgeCodigoGrilla` aún se usa en un solo lugar** — la
+  decisión fue dejarlo listo, no hacer la migración masiva. Si
+  se agregan vistas que pinten códigos de grilla, ya está el
+  helper.
+- **No es la producción.** Antes de pensar en migrar a este
+  rewrite hay que decidir si IndexedDB + ExcelJS reemplazan a
+  localStorage + SheetJS, y resolver la migración del backup
+  histórico (estructura distinta a la v31).
+
+---
+
 ## v31 — 2026-05-19 — FIX CRÍTICO: pérdida silenciosa de asignación
 
 ### Pedido del usuario

@@ -2,6 +2,123 @@
 
 ---
 
+## UX + Dominio — 2026-05-20 — Columna Id e inclusión de inventario 0
+
+### Pedido del usuario
+
+> "la lista de equipos debe incluir el Id y considerar incluso
+> aquellos equipos que tienen inventario 0"
+
+### Diagnóstico
+
+Sobre `outputs/pmp_refactor.html`. Dos cosas distintas en una frase:
+
+**1) La columna Id no estaba.** La tabla mostraba carpeta, serie,
+inventario, familia, servicio, marca/modelo y estado. El id interno
+(UUID generado al importar) no aparecía en ningún lado, lo que
+dificulta la trazabilidad cuando hay que correlacionar entre la
+exportación, el JSON de backup y un equipo concreto en pantalla.
+
+**2) Equipos con inventario "0" desaparecían.** Dos bugs encadenados:
+
+- **`D.esSlot`** marcaba como slot a *cualquier* fila sin serie y sin
+  inventario, ignorando que la fila tuviera marca, modelo o carpeta.
+  Un equipo recién llegado al hospital, con todo registrado salvo
+  serie/inventario formales, se invisibilizaba (filtro por defecto
+  oculta slots).
+- **El coalesce con `||`** trataba el cero como falsy. En
+  `esSlot` `filaMaestro.inventario || filaMaestro.numeroInventario`
+  con `inventario: 0` saltaba al segundo operando → el cero se
+  perdía. Y en el armado del equipo, `fila.numeroInventario || null`
+  guardaba `null` para inventarios cero, así que tampoco
+  aparecía en pantalla al buscar.
+
+### Cambios aplicados
+
+**1) Columna "Id" en la vista de inventario.** Primera columna,
+formato monospace, 8 chars del UUID. Tooltip muestra el id completo.
+Click copia al clipboard (con `stopPropagation` para no disparar la
+navegación de la fila). Atajo útil para referenciar el equipo en
+bug reports y exportaciones.
+
+**2) `D.esSlot` ampliado a fila completa.** Recibe ahora carpeta,
+marca y modelo además de serie/inventario:
+
+```js
+if (serie  && !esValorDisponible(serie)) return false;
+if (inv    && !esValorDisponible(inv))   return false;
+if (carpeta || marca || modelo)          return false;  // ← nuevo
+return true;
+```
+
+Un equipo con CUALQUIER dato real (carpeta administrativa o
+marca/modelo) deja de marcarse como slot.
+
+**3) `??` reemplaza `||` en lecturas de inventario/serie.** Tanto en
+`D.esSlot` como en `D.equipoDesdeFilaMaestro`. El cero (numérico o
+"0" string) se preserva. La persistencia ahora usa `U.isBlank()`
+explícito (vacío real) en vez del falsy genérico.
+
+**4) Search del inventario incluye id parcial.** Si el usuario tipea
+los primeros 4–8 chars del UUID que ve en la columna nueva, la fila
+matchea. La búsqueda también se robusteció con `String(... ?? '')`
+para no romper si `numeroInventario` es número o null.
+
+**5) Display del inventario en la tabla** usa `U.norm()` antes de
+testear vacío, así un "0" se muestra como `INV 0` (antes habría
+mostrado `INV —` por la coerción falsy).
+
+### Mejora UX/UI propia
+
+El id corto en pantalla con click-para-copiar evita el viaje al
+DevTools cuando hay que reportar un caso concreto. Cuesta tres
+caracteres de espacio en la tabla y vale por mil cuando aparece un
+bug raro y hay que pedirle al usuario "mandame el id del equipo
+problemático".
+
+### Validación
+
+Sintaxis JS OK con `node --check` (4144 líneas en `<script>`).
+
+Tests en sandbox (`/tmp/test_slot.mjs`), 18/18 OK:
+
+```
+--- esSlot: equipos REALES no se marcan como slots ---
+serie="SN1", inv=""                                         OK
+serie="", inv="0" (string)                                  OK
+serie="", inv=0 (number)                                    OK
+sin serie/inv pero con marca+modelo                         OK  ← nuevo
+sin serie/inv pero con carpeta                              OK  ← nuevo
+serie=DISPONIBLE, inv="", marca="X"                         OK  ← nuevo
+--- esSlot: placeholders verdaderos SÍ son slots ---
+todo vacío                                                  OK
+serie=DISPONIBLE, inv=DISPONIBLE                            OK
+serie="", inv="", marca="", modelo=""                       OK
+--- equipoDesdeFilaMaestro: preserva inventario "0" ---
+inv="0" se guarda como "0" (no null)                        OK  ← fix
+inv=0 (number) se guarda como "0"                           OK  ← fix
+esSlot con inv=0 → false                                    OK  ← fix
+todo vacío: numeroInventario=null, esSlot=true              OK
+--- caso real frecuente ---
+equipo real (carpeta+serie+inv+marca+modelo) intacto        OK
+```
+
+### Qué mirar en la próxima iteración
+
+- **Backfill de equipos invisibles.** Si en el backup actual hay
+  equipos con marca/modelo/carpeta pero sin serie/inv que entraron
+  como `esSlot=true`, no se "des-slot-ean" solos hasta que el
+  usuario re-importe el maestro. Conviene un job en `S.hidratar()`
+  que recalcule `esSlot` con la nueva lógica al cargar, para que
+  un backup viejo aparezca correcto sin re-importar.
+- **El cero como inventario** es un patrón institucional para
+  "sin inventariar". Tal vez convenga mostrarlo distinto en la
+  UI (badge "sin inv." en gris) para que no se confunda con un
+  inventario válido. Pendiente de feedback del usuario.
+- Sigue pendiente la migración a producción.
+
+---
+
 ## Refactor + UX — 2026-05-20 — Responsable como lista desplegable
 
 ### Pedido del usuario

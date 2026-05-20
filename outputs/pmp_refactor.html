@@ -43,9 +43,25 @@
       editable (antes era solo lectura). Reasignar deja entrada
       automática en el log: "Responsable: X → Y" y dispara evento
       PENDIENTE_ACTUALIZADO. Útil cuando rota el técnico asignado.
-  Validación: sintaxis JS OK; sandbox test del helper cubre 6 casos
-  (sin valor, valor en lista, extras, dedupe extra/técnico, técnicos
-  inactivos excluidos, valor fuera de lista → "Otro…").
+  --------------------------------------------------------------------
+  CAMBIOS Vista Inventario:
+    · Columna "Id" visible (primera columna, 8 chars del UUID en
+      mono). Tooltip con el id completo + click copia al clipboard
+      sin disparar la navegación de la fila. Útil para trazabilidad
+      de bugs y referencias cruzadas con exportaciones.
+    · `D.esSlot` ya no oculta equipos con marca/modelo/carpeta —
+      solo son slots los placeholders verdaderos (todos los campos
+      vacíos o serie/inv = DISPONIBLE). Un equipo con marca pero
+      sin serie ya no se invisibiliza.
+    · `D.esSlot` y la persistencia del inventario usan `??` en
+      vez de `||` — el valor 0 (cero numérico o "0" literal) deja
+      de tratarse como vacío. Un equipo con inventario "0" se
+      guarda como "0" y aparece en la lista (antes se perdía
+      en `fila.numeroInventario || null`).
+    · Buscador del inventario matchea también por id parcial
+      (los primeros 8 chars que ven en pantalla).
+  Validación: 18/18 casos en sandbox (slot puro, inv=0 string/number,
+  marca sin serie, DISPONIBLE/DISPONIBLE, equipo real frecuente).
   ====================================================================
 -->
 <html lang="es">
@@ -1103,8 +1119,10 @@ const D = {
     return {
       id,
       numeroCarpeta:        fila.numeroCarpeta,
-      numeroInventario:     fila.numeroInventario || null,
-      numeroSerie:          fila.numeroSerie || null,
+      // Preserva inventarios "0" (literal cero) que se pierden con `|| null`
+      // cuando el origen del dato es numérico en vez de string.
+      numeroInventario:     U.isBlank(fila.numeroInventario) ? null : U.norm(fila.numeroInventario),
+      numeroSerie:          U.isBlank(fila.numeroSerie) ? null : U.norm(fila.numeroSerie),
       familia:              fila.familia || 'MONITORIZACION',
       servicioClinico:      fila.servicio,
       unidad:               fila.unidad,
@@ -1121,7 +1139,10 @@ const D = {
       enGarantia:           fila.garantia,
       fechaFinGarantia:     fila.finGarantia,
       estadoOperacional:    fila.estado || 'OPERATIVO',
-      esSlot:               D.esSlot({ serie: fila.numeroSerie, inventario: fila.numeroInventario }),
+      esSlot:               D.esSlot({
+                              serie: fila.numeroSerie, inventario: fila.numeroInventario,
+                              carpeta: fila.numeroCarpeta, marca: fila.marca, modelo: fila.modelo
+                            }),
       observaciones:        fila.observaciones,
       origenRegistro:       'importado',
       creadoEn:             ahora,
@@ -1139,11 +1160,27 @@ const D = {
     };
   },
 
+  /**
+   * Un slot es un placeholder del maestro SIN ningún dato real. Si la fila trae
+   * marca, modelo, carpeta o un inventario distinto de '' / DISPONIBLE — es un
+   * equipo real con identificación incompleta, NO un slot.
+   *
+   * Notas:
+   *  · Un inventario "0" (cero) cuenta como dato real (equipos sin inventariar
+   *    formalmente que en el maestro se marcan con 0).
+   *  · Un equipo con carpeta administrativa o marca/modelo registrados no se
+   *    oculta aunque le falten serie e inventario.
+   */
   esSlot(filaMaestro) {
-    const serie = U.norm(filaMaestro.serie || filaMaestro.numeroSerie);
-    const inv   = U.norm(filaMaestro.inventario || filaMaestro.numeroInventario);
-    if (serie && !U.esValorDisponible(serie)) return false;
-    if (inv && !U.esValorDisponible(inv)) return false;
+    // `??` (no `||`) para no perder un inventario o serie con valor 0.
+    const serie    = U.norm(filaMaestro.serie     ?? filaMaestro.numeroSerie);
+    const inv      = U.norm(filaMaestro.inventario ?? filaMaestro.numeroInventario);
+    const carpeta  = U.norm(filaMaestro.carpeta    ?? filaMaestro.numeroCarpeta);
+    const marca    = U.norm(filaMaestro.marca);
+    const modelo   = U.norm(filaMaestro.modelo);
+    if (serie  && !U.esValorDisponible(serie)) return false;
+    if (inv    && !U.esValorDisponible(inv))   return false;
+    if (carpeta || marca || modelo)            return false;
     return true;
   },
 
@@ -1743,15 +1780,14 @@ const IMPORT = {
       inconsistenciasReg: []        // MP registrada por operador difiere de registro histórico del maestro nuevo
     };
     const seriesEnMaestro = new Set(
-      filasProg.filter(f => !D.esSlot({ serie: f.numeroSerie, inventario: f.numeroInventario }))
-              .map(f => U.normUpper(f.numeroSerie))
+      filasProg.filter(f => !D.esSlot(f)).map(f => U.normUpper(f.numeroSerie))
     );
     for (const e of S.equipos) {
       if (e.esSlot) continue;
       if (!seriesEnMaestro.has(U.normUpper(e.numeroSerie))) diff.equiposAusentes.push(e);
     }
     for (const fila of filasProg) {
-      if (D.esSlot({ serie: fila.numeroSerie, inventario: fila.numeroInventario })) continue;
+      if (D.esSlot(fila)) continue;
       const existente = S.equipoPorSerie(fila.numeroSerie);
       if (!existente) {
         diff.equiposNuevos.push(fila);
@@ -2672,6 +2708,7 @@ UI.views.inventario = function() {
     }
     const tabla = U.el('table');
     tabla.appendChild(U.el('thead', {}, [U.el('tr', {}, [
+      U.el('th', { class: 'col-shrink' }, 'Id'),
       U.el('th', { class: 'col-shrink' }, 'Carpeta'),
       U.el('th', {}, 'Serie / Inventario'),
       U.el('th', {}, 'Familia'),
@@ -2687,10 +2724,26 @@ UI.views.inventario = function() {
         class: 'is-clickable ' + (e.esSlot ? 'is-slot ' : '') + (alerta ? 'is-alert' : ''),
         onclick: () => UI.go('equipo', e.id)
       });
+      // Id corto (8 chars del UUID) con tooltip del id completo. Click → copia el id completo
+      // al clipboard sin disparar la navegación de la fila.
+      const idCorto = (e.id || '').slice(0, 8);
+      tr.appendChild(U.el('td', {
+        class: 'col-mono col-shrink text-xs',
+        title: 'Id interno: ' + (e.id || '—') + ' (click para copiar)',
+        onclick: (ev) => {
+          ev.stopPropagation();
+          if (e.id && navigator.clipboard) {
+            navigator.clipboard.writeText(e.id).then(
+              () => U.toast('Id copiado: ' + idCorto, 'ok'),
+              () => U.toast('No se pudo copiar', 'error')
+            );
+          }
+        }
+      }, idCorto || '—'));
       tr.appendChild(U.el('td', { class: 'col-mono col-shrink' }, e.numeroCarpeta || '—'));
       tr.appendChild(U.el('td', { class: 'col-strong' }, [
         U.el('div', { class: 'text-mono text-sm' }, e.numeroSerie || (e.esSlot ? 'DISPONIBLE' : '—')),
-        U.el('div', { class: 'text-mono text-xs text-muted' }, 'INV ' + (e.numeroInventario || '—'))
+        U.el('div', { class: 'text-mono text-xs text-muted' }, 'INV ' + (U.norm(e.numeroInventario) !== '' ? e.numeroInventario : '—'))
       ]));
       tr.appendChild(U.el('td', { class: 'text-mono text-xs' }, e.familia));
       tr.appendChild(U.el('td', {}, [
@@ -2732,8 +2785,9 @@ function filtrarEquipos(f) {
   if (f.query) {
     const q = f.query.toLowerCase().trim();
     r = r.filter(e =>
+      (e.id || '').toLowerCase().includes(q) ||
       (e.numeroSerie || '').toLowerCase().includes(q) ||
-      (e.numeroInventario || '').toLowerCase().includes(q) ||
+      (String(e.numeroInventario ?? '')).toLowerCase().includes(q) ||
       (e.numeroCarpeta || '').toLowerCase().includes(q) ||
       (e.marca || '').toLowerCase().includes(q) ||
       (e.modelo || '').toLowerCase().includes(q));

@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+dist/
+pmp-state.json
+*.tmp.json

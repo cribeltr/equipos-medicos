@@ -1,0 +1,32 @@
+{
+  "name": "pmp-domain-engine",
+  "version": "3.0.0-it1",
+  "description": "Motor de dominio del sistema PMP (Plan de Mantenimiento Preventivo) del SEC - HHHA Temuco",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "smoke": "tsx scripts/smoke.ts",
+    "verify": "npm run typecheck && npm run lint -- --max-warnings 0 && npm run coverage && npm run smoke"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@vitest/coverage-v8": "^3.0.5",
+    "eslint": "^9.19.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0",
+    "vitest": "^3.0.5"
+  }
+}

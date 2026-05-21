@@ -2,6 +2,53 @@
 
 ---
 
+## motor 3.0.0-it1 — 2026-05-21 — Motor de dominio en TypeScript (`engine/`)
+
+### Pedido del usuario
+
+Subió `PROMPT_CLAUDE_CODE_PMP.md`: un prompt autocontenido y exhaustivo
+para reconstruir el **motor de dominio** del sistema PMP (la lógica de
+negocio, sin UI) en TypeScript estricto, tipado, testeado y
+funcionalmente equivalente al 100 %.
+
+### Cambios aplicados
+
+Proyecto nuevo en el subdirectorio `engine/` (no toca `pmp.html`):
+
+- `src/domain/` — catálogos, tipos, casos de uso (MP, ciclo correctivo,
+  pendientes, vinculaciones C2/C3, grilla), reglas derivadas (alertas,
+  KPIs, reportes, anexos), fechas y validadores.
+- `src/import/` — importación del maestro y de asignaciones mensuales,
+  con cálculo y resolución de diferencias.
+- `src/persistence/` — interfaz `Repository` + implementaciones en
+  memoria y JSON en disco; backup validado con Zod.
+- `src/state/store.ts` — `PmpEngine`, fachada con estado.
+- Tests (Vitest), `docs/` (ARCHITECTURE, DECISIONS, VERIFICACION) y
+  `scripts/smoke.ts`.
+
+### Validación
+
+- `tsc --noEmit`: 0 errores. `eslint .`: 0 errores / 0 warnings.
+- 259 tests pasan; cobertura de ramas 98.66 % en `domain` y 96.01 % en
+  `import` (umbral exigido 95 %).
+- Smoke test del flujo §11.1 (ciclo correctivo completo): OK.
+
+### Mejora propia explicitada
+
+Las transiciones de estado del equipo se centralizan en una única
+función (`transicionarEstado`) que es el único punto que escribe
+`equipo.estado` y emite el evento `ESTADO`. Esto vuelve imposible un
+cambio de estado "fantasma" desde otro flujo (la deuda técnica del
+logger vacío de la app original nace de mutaciones dispersas).
+
+### Qué mirar la próxima iteración
+
+El motor está aislado de la UI: el siguiente paso natural es conectar
+una capa de presentación (o el propio `pmp.html`) consumiendo
+`PmpEngine`, sin reescribir lógica.
+
+---
+
 ## v31 — 2026-05-19 — FIX CRÍTICO: pérdida silenciosa de asignación
 
 ### Pedido del usuario
